@@ -1,0 +1,26 @@
+<resources>
+    <string name="app_name">Assignment_7</string>
+    <string name="btn_add_new">Add new</string>
+    <string name="action_settings">Settings</string>
+    <string name="btn_saveI">Save Internal</string>
+    <string name="btn_saveE">Save External</string>
+    <string name="btn_cancel">Cancel</string>
+
+    <string-array name="education_array">
+        <item>Pre-primary</item>
+        <item>Primary</item>
+        <item>Lower secondary</item>
+        <item>Upper secondary</item>
+        <item>Post-secondary non-tertiary</item>
+        <item>First stage of tertiary</item>
+        <item>Second stage of tertiary</item>
+    </string-array>
+
+    <string-array name="hobbies_array">
+        <item>Sport</item>
+        <item>Game</item>
+        <item>Music</item>
+        <item>Animation</item>
+        <item>Reading</item>
+    </string-array>
+</resources>
