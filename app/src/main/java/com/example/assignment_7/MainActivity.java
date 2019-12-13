@@ -7,6 +7,7 @@ import androidx.core.content.res.ResourcesCompat;
 
 import android.Manifest;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.graphics.Typeface;
@@ -57,6 +58,8 @@ public class MainActivity extends AppCompatActivity {
 
     private int viewBackgroundColor;
     private Drawable drawable;
+    private SharedPreferences sharedPreferences;
+    private String prefsFileName;
 
     private final int MENU_COLOR_WHITE = 0;
     private final int MENU_COLOR_DEFAULT = 1;
@@ -65,9 +68,9 @@ public class MainActivity extends AppCompatActivity {
     private final int MENU_COLOR_BLUE = 4;
     private final int MENU_COLOR_RED = 5;
 
-    private final int MENU_TEXT_YELLOW = 6;
-    private final int MENU_TEXT_BLACK = 7;
-    private final int MENU_TEXT_RED = 8;
+    private final int MENU_TEXT_BLACK = 6;
+    private final int MENU_TEXT_RED = 7;
+    private final int MENU_TEXT_YELLOW = 8;
 
     private final int MENU_FONT_SIZE_16 = 9;
     private final int MENU_FONT_SIZE_22 = 10;
@@ -80,6 +83,11 @@ public class MainActivity extends AppCompatActivity {
     private final int MENU_LOCATION_ALL = 15;
     private final int MENU_LOCATION_INTERNAL = 16;
     private final int MENU_LOCATION_EXTERNAL = 17;
+
+    private static final String BACKGROUND_COLOR = "bg_color";
+    private static final String FONT_COLOR = "font_color";
+    private static final String FONT_SIZE = "font_size";
+    private static final String FONT_TYPE = "font_type";
 
     private int fontSize = 16;
     private String textColor = "#000000";
@@ -180,33 +188,57 @@ public class MainActivity extends AppCompatActivity {
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.menu, menu);
         createMenu(menu);
+
+        SharedPreferences loadedSharedPrefs = getSharedPreferences(prefsFileName, MODE_PRIVATE);
+        int menuItemsSelected_bg = loadedSharedPrefs.getInt(BACKGROUND_COLOR, 0);
+        int menuItemsSelected_tc = loadedSharedPrefs.getInt(FONT_COLOR, 0);
+        int menuItemsSelected_fs = loadedSharedPrefs.getInt(FONT_SIZE, 0);
+        int menuItemsSelected_ft = loadedSharedPrefs.getInt(FONT_TYPE, 0);
+        SubMenu bg_color = menu.findItem(R.id.menu_bgColor).getSubMenu();
+        SubMenu text_color = menu.findItem(R.id.menu_textColor).getSubMenu();
+        SubMenu font_size = menu.findItem(R.id.menu_fontSize).getSubMenu();
+        SubMenu font_type = menu.findItem(R.id.menu_font).getSubMenu();
+        onOptionsItemSelected(bg_color.getItem(menuItemsSelected_bg));
+        onOptionsItemSelected(text_color.getItem(menuItemsSelected_tc));
+        onOptionsItemSelected(font_size.getItem(menuItemsSelected_fs));
+        onOptionsItemSelected(font_type.getItem(menuItemsSelected_ft));
+
+
         return true;
     }
 
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        sharedPreferences = getSharedPreferences(prefsFileName, MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
         switch (item.getItemId()){
             case MENU_COLOR_WHITE:
                 getWindow().getDecorView().setBackgroundColor(Color.WHITE);
+                editor.putInt(BACKGROUND_COLOR, item.getItemId());
                 break;
             case MENU_COLOR_DEFAULT:
                 getWindow().getDecorView().setBackgroundColor(viewBackgroundColor);
+                editor.putInt(BACKGROUND_COLOR, item.getItemId());
                 break;
             case MENU_COLOR_GREEN:
                 //green
                 getWindow().getDecorView().setBackgroundColor(Color.rgb(52,235,174));
+                editor.putInt(BACKGROUND_COLOR, item.getItemId());
                 break;
             case MENU_COLOR_GRAY:
                 //gray
                 getWindow().getDecorView().setBackgroundColor(Color.rgb(188,180,194));
+                editor.putInt(BACKGROUND_COLOR, item.getItemId());
                 break;
             case MENU_COLOR_BLUE:
                 //blue
                 getWindow().getDecorView().setBackgroundColor(Color.rgb(126,144,237));
+                editor.putInt(BACKGROUND_COLOR, item.getItemId());
                 break;
             case MENU_COLOR_RED:
                 //red
                 getWindow().getDecorView().setBackgroundColor(Color.rgb(237,102,109));
+                editor.putInt(BACKGROUND_COLOR, item.getItemId());
                 break;
             case MENU_TEXT_BLACK:
                 textColor = "#000000";
@@ -217,6 +249,7 @@ public class MainActivity extends AppCompatActivity {
                     actv.setAdapter(adapter_actv);
                     list.setAdapter(adapter_actv);
                 }
+                editor.putInt(FONT_COLOR, item.getItemId()-6);
                 break;
             case MENU_TEXT_RED:
                 textColor = "#ff4d4d";
@@ -227,6 +260,7 @@ public class MainActivity extends AppCompatActivity {
                     actv.setAdapter(adapter_actv);
                     list.setAdapter(adapter_actv);
                 }
+                editor.putInt(FONT_COLOR, item.getItemId()-6);
                 break;
             case MENU_TEXT_YELLOW:
                 textColor = "#ffff00";
@@ -237,6 +271,8 @@ public class MainActivity extends AppCompatActivity {
                     actv.setAdapter(adapter_actv);
                     list.setAdapter(adapter_actv);
                 }
+                editor.putInt(FONT_COLOR, item.getItemId()-6);
+                break;
             case MENU_FONT_SIZE_16:
                 fontSize = 16;
                 btn_add_new.setTextSize(fontSize);
@@ -246,6 +282,7 @@ public class MainActivity extends AppCompatActivity {
                     actv.setAdapter(adapter_actv);
                     list.setAdapter(adapter_actv);
                 }
+                editor.putInt(FONT_SIZE, item.getItemId()-9);
                 break;
             case MENU_FONT_SIZE_22:
                 fontSize = 22;
@@ -256,6 +293,7 @@ public class MainActivity extends AppCompatActivity {
                     actv.setAdapter(adapter_actv);
                     list.setAdapter(adapter_actv);
                 }
+                editor.putInt(FONT_SIZE, item.getItemId()-9);
                 break;
             case MENU_FONT_SIZE_30:
                 fontSize = 30;
@@ -266,6 +304,7 @@ public class MainActivity extends AppCompatActivity {
                     actv.setAdapter(adapter_actv);
                     list.setAdapter(adapter_actv);
                 }
+                editor.putInt(FONT_SIZE, item.getItemId()-9);
                 break;
             case MENU_TYPE_NORMAL:
                 typeface = ResourcesCompat.getFont(this, R.font.opensans_regular);
@@ -276,6 +315,7 @@ public class MainActivity extends AppCompatActivity {
                     actv.setAdapter(adapter_actv);
                     list.setAdapter(adapter_actv);
                 }
+                editor.putInt(FONT_TYPE, item.getItemId()-12);
                 break;
             case MENU_TYPE_BOLD:
                 typeface = ResourcesCompat.getFont(this, R.font.opensans_bold);
@@ -286,6 +326,7 @@ public class MainActivity extends AppCompatActivity {
                     actv.setAdapter(adapter_actv);
                     list.setAdapter(adapter_actv);
                 }
+                editor.putInt(FONT_TYPE, item.getItemId()-12);
                 break;
             case MENU_TYPE_LIGHT:
                 typeface = ResourcesCompat.getFont(this, R.font.opensans_light);
@@ -296,6 +337,7 @@ public class MainActivity extends AppCompatActivity {
                     actv.setAdapter(adapter_actv);
                     list.setAdapter(adapter_actv);
                 }
+                editor.putInt(FONT_TYPE, item.getItemId()-12);
                 break;
             case MENU_LOCATION_INTERNAL:
                 personList.clear();
@@ -326,6 +368,7 @@ public class MainActivity extends AppCompatActivity {
                 }
                 break;
         }
+        editor.commit();
         return super.onOptionsItemSelected(item);
     }
 
@@ -338,6 +381,7 @@ public class MainActivity extends AppCompatActivity {
         bg_color.clear();
         bg_color.add(0, MENU_COLOR_WHITE, 0, "White");
         bg_color.add(0, MENU_COLOR_DEFAULT, 0, "Clear");
+        bg_color.add(0, MENU_COLOR_GREEN, 0, "Green");
         bg_color.add(0, MENU_COLOR_GRAY, 0, "Gray");
         bg_color.add(0, MENU_COLOR_BLUE, 0, "Blue");
         bg_color.add(0, MENU_COLOR_RED, 0, "Red");
@@ -356,8 +400,8 @@ public class MainActivity extends AppCompatActivity {
 
         SubMenu font = menu.findItem(R.id.menu_font).getSubMenu();
         font.clear();
-        font.add(0,MENU_TYPE_NORMAL,0,"Normal");
         font.add(0,MENU_TYPE_BOLD,0,"Bold");
+        font.add(0,MENU_TYPE_NORMAL,0,"Normal");
         font.add(0,MENU_TYPE_LIGHT,0,"Light");
 
         SubMenu location = menu.findItem(R.id.menu_location).getSubMenu();
